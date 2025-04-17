@@ -14,8 +14,12 @@ pipeline {
 
         stage('Lint Code') {
             steps {
-                sh 'pip install flake8'
-                sh 'flake8 . --exclude=migrations,venv --max-line-length=120'
+                   sh '''
+                      python3 -m venv venv
+                      . venv/bin/activate
+                      pip install flake8
+                      flake8 .
+                    '''
             }
         }
 
