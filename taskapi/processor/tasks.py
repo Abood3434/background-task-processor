@@ -14,6 +14,7 @@ def process_image_task(image_id):
 
         input_path = image_obj.original_image.path
         output_path = os.path.join(settings.MEDIA_ROOT, 'processed', f'processed_{os.path.basename(input_path)}')
+        os.makedirs(os.path.join(settings.MEDIA_ROOT, 'processed'), exist_ok=True)
 
         with Image.open(input_path) as img:
             img = img.resize((300, 300))
