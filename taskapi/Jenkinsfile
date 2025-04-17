@@ -1,17 +1,11 @@
 pipeline {
-    agent any
-
-    environment {
-        DOCKER_BUILDKIT = 1
+    agent {
+        docker {
+            image 'python:3.13'
+        }
     }
 
     stages {
-        stage('Clone Repo') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Lint Code') {
             steps {
                 sh 'pip install flake8'
