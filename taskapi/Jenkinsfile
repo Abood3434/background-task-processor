@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_BUILDKIT = 1
+    }
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Lint Code') {
+            steps {
+                sh 'pip install flake8'
+                sh 'flake8 . --exclude=migrations,venv --max-line-length=120'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'pip install -r requirements.txt'
+                sh 'python manage.py test'
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                sh 'docker-compose build'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+        failure {
+            echo 'Build failed!'
+        }
+    }
+}
