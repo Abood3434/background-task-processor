@@ -4,6 +4,7 @@ from .serializers import ImageUploadSerializer
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser
+from .tasks import process_image_task
 
 # Create your views here.
 
@@ -14,4 +15,5 @@ class ImageUploadViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        instance = serializer.save(user=self.request.user)
+        process_image_task.delay(instance.id)
